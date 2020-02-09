@@ -1,0 +1,47 @@
+
+clang -O0 -emit-llvm /Users/py/demo/sqrt_minus10_add.cpp -S -o /Users/py/demo/1.ll
+llvm-as /Users/py/demo/1.ll  -o /Users/py/demo/1.bc
+cd /Users/py/LLVM_EXTRACTOR
+/Users/py/LLVM_EXTRACTOR/bin/lli /Users/py/demo/1.bc
+
+
+
+clang -O0 -emit-llvm /Users/py/demo/sqrt_minus10_mul.cpp -S -o /Users/py/demo/2.ll
+llvm-as /Users/py/demo/2.ll  -o /Users/py/demo/2.bc
+cd /Users/py/LLVM_EXTRACTOR
+/Users/py/LLVM_EXTRACTOR/bin/lli /Users/py/demo/2.bc
+
+
+clang -O0 -emit-llvm /Users/py/demo/sqrt_minus10_add03.cpp -S -o /Users/py/demo/3.ll
+llvm-as /Users/py/demo/3.ll  -o /Users/py/demo/3.bc
+cd /Users/py/LLVM_EXTRACTOR
+/Users/py/LLVM_EXTRACTOR/bin/lli /Users/py/demo/3.bc
+
+
+commit d33d5ac7aaba9618f06a1887081b2f9ded0466e4
+Author: George Rimar <grimar@accesssoftek.com>
+Date:   Sun Mar 24 14:41:45 2019 +0000
+py:llvm py$ git status
+On branch master
+Your branch is up-to-date with 'origin/master'
+
+	modified:   include/llvm/IR/Instruction.h
+	modified:   include/llvm/IR/Value.h
+	modified:   lib/Bitcode/Reader/BitcodeReader.cpp
+	modified:   lib/DebugInfo/Symbolize/Symbolize.cpp
+	modified:   lib/ExecutionEngine/ExecutionEngine.cpp
+	modified:   lib/ExecutionEngine/MCJIT/MCJIT.cpp
+	modified:   lib/ExecutionEngine/RuntimeDyld/RuntimeDyld.cpp
+	modified:   lib/IR/AsmWriter.cpp
+	modified:   lib/IR/Module.cpp
+	modified:   lib/IR/Value.cpp
+	modified:   lib/IRReader/IRReader.cpp
+	modified:   lib/Object/Binary.cpp
+	modified:   lib/Object/IRObjectFile.cpp
+	modified:   lib/Object/MachOObjectFile.cpp
+	modified:   lib/Object/ObjectFile.cpp
+	modified:   lib/Object/SymbolicFile.cpp
+	modified:   tools/lli/lli.cpp
+
+
+/Users/py/llvm
