@@ -88,6 +88,10 @@
 #include "iostream"
 #include <fstream>
 
+
+
+
+
 using namespace llvm;
 
 // Make virtual table appear in this compilation unit.
@@ -1335,18 +1339,11 @@ static void WriteConstantInternal(raw_ostream &Out, const Constant *CV,
             bool isInf = APF.isInfinity();
             bool isNaN = APF.isNaN();
 
-//            std::cout << "APFRawData: ";
-//            std::cout << *APF.bitcastToAPInt().getRawData()<< std::endl;
-//
-
             write << " DOU:" << *APF.bitcastToAPInt().getRawData() << " ";
             write.flush();
 
             if (!isInf && !isNaN) {
                 double Val = isDouble ? APF.convertToDouble() : APF.convertToFloat();
-
-//                std::cout << "Val" << std::endl;
-//                std::cout << Val << std::endl;
 
                 SmallString<128> StrVal;
                 APF.toString(StrVal, 6, 0, false);
@@ -1361,7 +1358,7 @@ static void WriteConstantInternal(raw_ostream &Out, const Constant *CV,
                 // Reparse stringized version!
                 if (APFloat(APFloat::IEEEdouble(), StrVal).convertToDouble() == Val) {
                     Out << StrVal;
-                    std::cout << "APFloat StrVal: " <<  Val << std::endl;
+                   // std::cout << "APFloat StrVal: " <<  Val << std::endl;
                     return;
                 }
             }
@@ -3659,7 +3656,7 @@ static void maybePrintCallAddrSpace(const Value *Operand, const Instruction *I,
 // This member is called for each Instruction in a function..
 void AssemblyWriter::printInstruction(const Instruction &I) {
 
-    std::ofstream write("/Users/py/data.txt", std::ios::app);
+    std::ofstream write("data.txt", std::ios::app);
 
     if (AnnotationWriter) AnnotationWriter->emitInstructionAnnot(&I, Out);
 
