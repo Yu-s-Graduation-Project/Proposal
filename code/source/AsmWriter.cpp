@@ -2259,24 +2259,23 @@ static void WriteAsOperandInternal(raw_ostream &Out, const Value *V,
                                    TypePrinting *TypePrinter,
                                    SlotTracker *Machine,
                                    const Module *Context) {
-//    std::cout << "~(a)" << std::endl;
+
     if (V->hasName()) {
-//      std::cout << "LLVM Name" << std::endl;
         // todo @llvm.sqrt.f64
         PrintLLVMName(Out, V);
-//      std::cout << "*LLVM Name*" << std::endl;
         return;
     }
-//    std::cout << "~(b)" << std::endl;
+
+
     const Constant *CV = dyn_cast<Constant>(V);
     if (CV && !isa<GlobalValue>(CV)) {
         assert(TypePrinter && "Constants require TypePrinting!");
-        std::cout << "~(const)" << std::endl;
+     //   std::cout << "~(const)" << std::endl;
         WriteConstantInternal(Out, CV, *TypePrinter, Machine, Context);
-        std::cout << "~(const*)" << std::endl;
+      //  std::cout << "~(const*)" << std::endl;
         return;
     }
-//    std::cout << "~(c)" << std::endl;
+
 
     if (const InlineAsm *IA = dyn_cast<InlineAsm>(V)) {
         Out << "asm ";
@@ -2295,7 +2294,7 @@ static void WriteAsOperandInternal(raw_ostream &Out, const Value *V,
         return;
     }
 
-//    std::cout << "~(d)" << std::endl;
+
 
     if (auto *MD = dyn_cast<MetadataAsValue>(V)) {
         WriteAsOperandInternal(Out, MD->getMetadata(), TypePrinter, Machine,
@@ -2303,7 +2302,7 @@ static void WriteAsOperandInternal(raw_ostream &Out, const Value *V,
         return;
     }
 
-//    std::cout << "~(e)" << std::endl;
+
 
     char Prefix = '%';
     int Slot;
@@ -2338,11 +2337,12 @@ static void WriteAsOperandInternal(raw_ostream &Out, const Value *V,
         Slot = -1;
     }
 
-//    std::cout << "~(f)" << std::endl;
+
 
     if (Slot != -1) {
         Out << Prefix << Slot;
-        std::cout << "Slot: " << Slot << std::endl;
+
+        //std::cout << "To Check Slot: " << Slot << std::endl;
     }
     else
         Out << "<badref>";
@@ -3697,10 +3697,10 @@ void AssemblyWriter::printInstruction(const Instruction &I) {
     // todo
     Out << I.getOpcodeName();
 
-
     if (!dyn_cast<AllocaInst>(&I)) {
-        write << "Op:" << I.getOpcode() << " ";
-        write.flush();
+//        write << "Op:" << I.getOpcode() << " ";
+//        write.flush();
+        std::cout << " Opcode: " << I.getOpcode() << " " << std::endl;
     }
 
 
