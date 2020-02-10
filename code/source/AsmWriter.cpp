@@ -1319,9 +1319,6 @@ static void WriteConstantInternal(raw_ostream &Out, const Constant *CV,
         }
         Out << CI->getValue();
 
-        write << " INT:" << *CI->getValue().getRawData() << " ";
-        write.flush();
-
         return;
     }
 
@@ -1339,14 +1336,15 @@ static void WriteConstantInternal(raw_ostream &Out, const Constant *CV,
             bool isInf = APF.isInfinity();
             bool isNaN = APF.isNaN();
 
-            write << " DOU:" << *APF.bitcastToAPInt().getRawData() << " ";
-            write.flush();
+//            write << " DOU:" << *APF.bitcastToAPInt().getRawData() << " ";
+//            write.flush();
 
             if (!isInf && !isNaN) {
                 double Val = isDouble ? APF.convertToDouble() : APF.convertToFloat();
 
                 SmallString<128> StrVal;
                 APF.toString(StrVal, 6, 0, false);
+
                 // Check to make sure that the stringized number is not some string like
                 // "Inf" or NaN, that atof will accept, but the lexer will not.  Check
                 // that the string matches the "[-+]?[0-9]" regex.
@@ -1358,7 +1356,7 @@ static void WriteConstantInternal(raw_ostream &Out, const Constant *CV,
                 // Reparse stringized version!
                 if (APFloat(APFloat::IEEEdouble(), StrVal).convertToDouble() == Val) {
                     Out << StrVal;
-                   // std::cout << "APFloat StrVal: " <<  Val << std::endl;
+                   std::cout << "APFloat StrVal: " <<  StrVal.c_str() << std::endl;
                     return;
                 }
             }
@@ -1373,6 +1371,8 @@ static void WriteConstantInternal(raw_ostream &Out, const Constant *CV,
             if (!isDouble)
                 apf.convert(APFloat::IEEEdouble(), APFloat::rmNearestTiesToEven,
                             &ignored);
+
+            // std::cout << "format hex: " << format_hex(apf.bitcastToAPInt().getZExtValue(), 0, /*Upper=*/true).DecValue << std::endl;
             Out << format_hex(apf.bitcastToAPInt().getZExtValue(), 0, /*Upper=*/true);
 
             return;
