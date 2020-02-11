@@ -1306,6 +1306,18 @@ static std::string toString(const APFloat &FP) {
     return Buf;
 }
 
+static std::string decToBin(int dec) {
+    std::string bin;
+    for (int i = 31; i >= 0; i--) {
+        int k = dec >> i;
+        if (k & 1)
+            bin += "1";
+        else
+            bin += "0";
+    }
+    return bin;
+}
+
 static void WriteConstantInternal(raw_ostream &Out, const Constant *CV,
                                   TypePrinting &TypePrinter,
                                   SlotTracker *Machine,
@@ -1336,6 +1348,8 @@ static void WriteConstantInternal(raw_ostream &Out, const Constant *CV,
             bool isInf = APF.isInfinity();
             bool isNaN = APF.isNaN();
 
+
+
 //            write << " DOU:" << *APF.bitcastToAPInt().getRawData() << " ";
 //            write.flush();
 
@@ -1344,6 +1358,8 @@ static void WriteConstantInternal(raw_ostream &Out, const Constant *CV,
 
                 SmallString<128> StrVal;
                 APF.toString(StrVal, 6, 0, false);
+
+             //   std::cout << "APFloat dec StrVal1: " << Val << std::endl;
 
                 // Check to make sure that the stringized number is not some string like
                 // "Inf" or NaN, that atof will accept, but the lexer will not.  Check
@@ -1356,7 +1372,9 @@ static void WriteConstantInternal(raw_ostream &Out, const Constant *CV,
                 // Reparse stringized version!
                 if (APFloat(APFloat::IEEEdouble(), StrVal).convertToDouble() == Val) {
                     Out << StrVal;
-                   std::cout << "APFloat StrVal: " <<  StrVal.c_str() << std::endl;
+                    std::cout << "APFloat Dec StrVal: " <<  StrVal.c_str() << std::endl;
+                    std::cout << "32 bin code : " << decToBin(Val) << std::endl;
+
                     return;
                 }
             }

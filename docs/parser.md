@@ -39,3 +39,28 @@ call Opcode: 56
                 }
 ```
 
+
+
+
+
+## Code added
+
+```Asmwriter.cpp```
+
+Transfer 
+
+```cpp
+static std::string decToBin(int dec) {
+    std::string bin;
+    for (int i = 31; i >= 0; i--) {
+        int k = dec >> i;
+        if (k & 1)
+            bin += "1";
+        else
+            bin += "0";
+    }
+    return bin;
+}
+
+```
+
