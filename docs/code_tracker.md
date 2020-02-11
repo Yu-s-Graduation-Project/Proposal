@@ -100,3 +100,12 @@ std::string Value::getInstruction() const {
 ```
 
 Useless
+
+
+
+```cpp
+ std::cout << " Raw: " << *APF.bitcastToAPInt().getRawData() << std::endl;
+```
+
+无符号整数
+

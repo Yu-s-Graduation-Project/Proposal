@@ -1306,23 +1306,93 @@ static std::string toString(const APFloat &FP) {
     return Buf;
 }
 
-static std::string decToBin(int dec) {
-    std::string bin;
-    for (int i = 31; i >= 0; i--) {
-        int k = dec >> i;
-        if (k & 1)
-            bin += "1";
-        else
-            bin += "0";
-    }
-    return bin;
-}
+//static std::string decToBin(int dec) {
+//    std::string bin;
+//    for (int i = 31; i >= 0; i--) {
+//        int k = dec >> i;
+//        if (k & 1)
+//            bin += "1";
+//        else
+//            bin += "0";
+//    }
+//    return bin;
+//}
+//
+//
+//union decBin {
+//    double dec;
+//    uint64_t bin;
+//};
+
+
+//std::string displayBin(union decBin decBin1) {
+//    int i;
+//    uint64_t base = 1;
+//
+//    std::string bin;
+//
+//    bin += (decBin1.bin & (base << 63)) + " ";
+//
+//    for (i = 62; i > 51; --i) {
+//        bin += ((decBin1.bin & (base << i)) >> i);
+//    }
+//
+//    bin +=  " ";
+//
+//    for (; i >= 0; --i) {
+//        bin += ((decBin1.bin & (base << i)) >> i);
+//    }
+//
+//    bin += "\n";
+//}
+
+
+
+
+//typedef union {
+//
+//    float f;
+//    struct {
+//        unsigned int mantissa : 23;
+//        unsigned int exponent : 8;
+//        unsigned int sign : 1;
+//
+//    } raw;
+//} IEEEFormat;
+//
+//static std::string printBinary(int n, int i) {
+//    std::string bin;
+//    int k;
+//    for (k = i - 1; k >= 0; k--) {
+//
+//        if ((n >> k) & 1)
+//            bin += "1";
+//        else
+//            bin += "0";
+//    }
+//
+//    return bin;
+//}
+//
+//static std::string IEEE(IEEEFormat var) {
+//
+//    // Prints the IEEE 754 representation
+//    // of a float value (32 bits)
+//
+//    std::string IEEEStr;
+//
+//    IEEEStr += var.raw.sign + printBinary(var.raw.exponent, 8) + (var.raw.mantissa, 23) + "\n";
+//
+//}
+
+
+
 
 static void WriteConstantInternal(raw_ostream &Out, const Constant *CV,
                                   TypePrinting &TypePrinter,
                                   SlotTracker *Machine,
                                   const Module *Context) {
-    std::ofstream write("/Users/py/data_const.txt", std::ios::app);
+    std::ofstream nlWrite("/Users/py/demo.nl", std::ios::app);
 
     if (const ConstantInt *CI = dyn_cast<ConstantInt>(CV)) {
         if (CI->getType()->isIntegerTy(1)) {
@@ -1331,8 +1401,10 @@ static void WriteConstantInternal(raw_ostream &Out, const Constant *CV,
         }
         Out << CI->getValue();
 
+
         return;
     }
+
 
     if (const ConstantFP *CFP = dyn_cast<ConstantFP>(CV)) {
         const APFloat &APF = CFP->getValueAPF();
@@ -1350,14 +1422,16 @@ static void WriteConstantInternal(raw_ostream &Out, const Constant *CV,
 
 
 
-//            write << " DOU:" << *APF.bitcastToAPInt().getRawData() << " ";
-//            write.flush();
+            std::cout << " Raw: " << *APF.bitcastToAPInt().getRawData() << std::endl;
+
 
             if (!isInf && !isNaN) {
                 double Val = isDouble ? APF.convertToDouble() : APF.convertToFloat();
 
                 SmallString<128> StrVal;
                 APF.toString(StrVal, 6, 0, false);
+
+
 
              //   std::cout << "APFloat dec StrVal1: " << Val << std::endl;
 
@@ -1372,8 +1446,12 @@ static void WriteConstantInternal(raw_ostream &Out, const Constant *CV,
                 // Reparse stringized version!
                 if (APFloat(APFloat::IEEEdouble(), StrVal).convertToDouble() == Val) {
                     Out << StrVal;
-                    std::cout << "APFloat Dec StrVal: " <<  StrVal.c_str() << std::endl;
-                    std::cout << "32 bin code : " << decToBin(Val) << std::endl;
+
+                    std::cout << "StrVal: " << StrVal.c_str() << std::endl;
+
+                    nlWrite <<  StrVal.c_str();
+
+
 
                     return;
                 }
