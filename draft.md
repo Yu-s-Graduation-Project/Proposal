@@ -28,3 +28,4 @@
 
 - Sanchez-Stern A, Panchekha P, Lerner S, et al. 2018. Finding Root Causes of Floating Point Error. In Pro- ceedings of 39th ACM SIGPLAN Conference on Programming Lan- guage Design and Implementation (PLDI’18). ACM, New York, NY, USA, 14 pages. https://doi.org/10.1145/3192366.3192411 
 - Benz F, Andreas H, Sebastian H. A Dynamic Program Analysis to find Floating-Point Accuracy Problems. PLDI '12: Proceedings of the 2012 ACM SIGPLAN Conference on Programming Language Design and Implementation. http://compilers.cs.uni-saarland.de/papers/benz_fp.pdf
+
