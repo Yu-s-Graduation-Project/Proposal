@@ -88,7 +88,7 @@
 #include "iostream"
 #include <fstream>
 
-
+#include <sstream>
 
 
 
@@ -183,6 +183,9 @@ static OrderMap orderModule(const Module *M) {
     }
     return OM;
 }
+
+//std::ofstream write("/Users/py/data.txt", std::ios::app);
+
 
 static void predictValueUseListOrderImpl(const Value *V, const Function *F,
                                          unsigned ID, const OrderMap &OM,
@@ -1385,6 +1388,26 @@ static std::string toString(const APFloat &FP) {
 //
 //}
 
+std::uint64_t getRepresentation(const double number) {
+    std::uint64_t representation;
+    memcpy(&representation, &number, sizeof representation);
+}
+
+char *getRepresentation0(const double number) {
+    auto *representation = new char[sizeof number];
+    memcpy(representation, &number, sizeof number);
+    return representation;
+}
+
+//std::bitset<64> binarize(unsigned long* input){
+//    union binarizeUnion
+//    {
+//        unsigned long* intVal;
+//        std::bitset<64> bits;
+//    } binTransfer;
+//    binTransfer.intVal=input;
+//    return (binTransfer.bits);
+//}
 
 
 
@@ -1400,6 +1423,7 @@ static void WriteConstantInternal(raw_ostream &Out, const Constant *CV,
             return;
         }
         Out << CI->getValue();
+
 
 
         return;
@@ -1421,8 +1445,8 @@ static void WriteConstantInternal(raw_ostream &Out, const Constant *CV,
             bool isNaN = APF.isNaN();
 
 
-
             std::cout << " Raw: " << *APF.bitcastToAPInt().getRawData() << std::endl;
+
 
 
             if (!isInf && !isNaN) {
@@ -1447,13 +1471,40 @@ static void WriteConstantInternal(raw_ostream &Out, const Constant *CV,
                 if (APFloat(APFloat::IEEEdouble(), StrVal).convertToDouble() == Val) {
                     Out << StrVal;
 
+                    std::ofstream nwrite("/Users/py/format_bc.txt", std::ios::app);
                     std::cout << "StrVal: " << StrVal.c_str() << std::endl;
 
-                    nlWrite <<  StrVal.c_str();
+                    std::cout << "Val: " << Val << std::endl;
 
+//                    nwrite << "StrVal: " << StrVal.c_str() << std::endl;
+//                    nwrite.flush();
 
+                    std::cout << "DUMP IEEE---" << std::endl;
+                    std::uint64_t ieee = getRepresentation(Val);
 
-                    return;
+//                    std::string ieeeStr;
+                    uint8_t *bytePointer = (uint8_t *)&Val;
+
+                    std::string ieeeStr;
+
+                    for(size_t index = 0; index < sizeof(double); index++) {
+                        uint8_t byte = bytePointer[index];
+
+                        for(int bit = 0; bit < 8; bit++) {
+                            int c = (int)byte&1;
+                            ieeeStr = std::to_string(c) + ieeeStr;
+//                            printf("%d", byte&1);
+                            printf("%d", byte&1);
+                            byte >>= 1;
+
+                        }
+                    }
+
+                    std::cout << "IEEESTR: " << std::endl;
+                    std::cout << ieeeStr << std::endl;
+                    std::cout << "IEEE end" << std::endl;
+                    nwrite << ieeeStr << std::endl;
+                    nwrite.flush();
                 }
             }
             // Otherwise we could not reparse it to exactly the same value, so we must
@@ -1468,7 +1519,7 @@ static void WriteConstantInternal(raw_ostream &Out, const Constant *CV,
                 apf.convert(APFloat::IEEEdouble(), APFloat::rmNearestTiesToEven,
                             &ignored);
 
-            // std::cout << "format hex: " << format_hex(apf.bitcastToAPInt().getZExtValue(), 0, /*Upper=*/true).DecValue << std::endl;
+
             Out << format_hex(apf.bitcastToAPInt().getZExtValue(), 0, /*Upper=*/true);
 
             return;
@@ -2439,6 +2490,7 @@ static void WriteAsOperandInternal(raw_ostream &Out, const Value *V,
         Out << Prefix << Slot;
 
         //std::cout << "To Check Slot: " << Slot << std::endl;
+
     }
     else
         Out << "<badref>";
@@ -3650,11 +3702,10 @@ void AssemblyWriter::printArgument(const Argument *Arg, AttributeSet Attrs) {
     }
 }
 
+
 /// printBasicBlock - This member is called for each basic block in a method.
 void AssemblyWriter::printBasicBlock(const BasicBlock *BB) {
     bool IsEntryBlock = BB == &BB->getParent()->getEntryBlock();
-
-    std::ofstream write("/Users/py/data.txt", std::ios::app);
 
     if (BB->hasName()) {              // Print out the label if it exists...
         Out << "\n";
@@ -3668,7 +3719,7 @@ void AssemblyWriter::printBasicBlock(const BasicBlock *BB) {
         else
             Out << "<badref>:";
 
-        write << "-----" << Slot << "-----" << std::endl;
+      //  write << "-----" << Slot << "-----" << std::endl;
     }
 
     if (!BB->getParent()) {
@@ -3703,7 +3754,7 @@ void AssemblyWriter::printBasicBlock(const BasicBlock *BB) {
 
     if (AnnotationWriter) AnnotationWriter->emitBasicBlockEndAnnot(BB, Out);
 
-    write << std::endl << "-----" << "EndSlot" << "-----" << std::endl;
+  //  write << std::endl << "-----" << "EndSlot" << "-----" << std::endl;
 }
 
 /// printInstructionLine - Print an instruction and a newline character.
@@ -3752,7 +3803,7 @@ static void maybePrintCallAddrSpace(const Value *Operand, const Instruction *I,
 // This member is called for each Instruction in a function..
 void AssemblyWriter::printInstruction(const Instruction &I) {
 
-    std::ofstream write("data.txt", std::ios::app);
+//    std::ofstream write("data.txt", std::ios::app);
 
     if (AnnotationWriter) AnnotationWriter->emitInstructionAnnot(&I, Out);
 
@@ -3769,10 +3820,10 @@ void AssemblyWriter::printInstruction(const Instruction &I) {
         int SlotNum = Machine.getLocalSlot(&I);
 
 
-        if (!dyn_cast<AllocaInst>(&I)) {
-            write << SlotNum << " ";
-            write.flush();
-        }
+//        if (!dyn_cast<AllocaInst>(&I)) {
+//            write << SlotNum << " ";
+//            write.flush();
+//        }
 
         if (SlotNum == -1)
             Out << "<badref> = ";
@@ -4237,8 +4288,8 @@ void AssemblyWriter::printInstruction(const Instruction &I) {
 
 
     if (!dyn_cast<AllocaInst>(&I)) {
-        write << std::endl;
-        write.flush();
+//        write << std::endl;
+//        write.flush();
     }
 }
 

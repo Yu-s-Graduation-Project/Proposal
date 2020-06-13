@@ -615,26 +615,24 @@ int main(int argc, char **argv, char * const *envp) {
             static_cast<SectionMemoryManager*>(RTDyldMM)->invalidateInstructionCache();
 
         // Run main.
+
+        std::cout << "FILE NAME------- " << ((StringRef)InputFile).str() + "format.txt" << std::endl;
         Result = EE->runFunctionAsMain(EntryFn, InputArgv, envp);
 
-        std::cout << sizeof(Instruction) << std::endl;
-        std::cout << sizeof(Value) << std::endl;
+        std::ofstream nwrite("/Users/py/format_bc.txt", std::ios::app);
 
-        std::cout << "---------Filename---------" << std::endl;
         std::cout << ((StringRef)InputFile).str() << std::endl;
 
-        std::cout << "---------Instruction---------" << std::endl;
-        std::ofstream ofile;
-//        ofile.open("./" + ((StringRef)InputFile).str());
-        ofile.open("data.txt");
         for(BasicBlock& bb : EntryFn->getBasicBlockList()) {
-          ofile << bb.getInstruction() << std::endl;
+          nwrite << bb.getInstruction() << std::endl;
           for(auto &i : bb.getInstList()){
-            ofile << i.getInstruction() << std::endl;
+            nwrite << i.getInstruction() << std::endl;
             i.dump();
           }
+
+            bb.dump();
         }
-        ofile.close();
+        nwrite.flush();
 //    std::cout << std::endl;
 //    std::cout << "---------Dump---------" << std::endl;
 //    for(BasicBlock& bb : EntryFn->getBasicBlockList()) {
